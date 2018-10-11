@@ -21,7 +21,7 @@ import sys
 import os
 import glob
 import shutil
-from multiprocessing.dummy import Pool as ThreadPool
+from multiprocessing import Pool as ThreadPool
 
 
 # Validate formats
@@ -327,7 +327,7 @@ validClasses = 0
 
 
 def process_one_class(c):
-
+    print("Starting process classes %d" % c)
     result_per_class = evaluator.PlotPrecisionRecallCurve(
         c,  # Class to show
         allBoundingBoxes,  # Object containing all bounding boxes (ground truths and detections)
@@ -336,13 +336,16 @@ def process_one_class(c):
         showInterpolatedPrecision=False,  # Don't plot the interpolated precision curve
         savePath=os.path.join(savePath, c + '.png'),
         showGraphic=showPlot)
+    print("Finished process classes %d" % c)
     return result_per_class
 
-
+print("Finish load data. Num of classes %d" % len(allClasses))
 pool = ThreadPool(6)
 # open the urls in their own threads
 # and return the results
-metric_results = pool.map(process_one_class(), allClasses)
+metric_results = pool.map(process_one_class, allClasses)
+pool.close()
+pool.join()
 
 
 # for each class

@@ -327,7 +327,7 @@ validClasses = 0
 
 
 def process_one_class(c):
-    print("Starting process classes %d" % c)
+    print("Starting process classes %s" % c)
     result_per_class = evaluator.PlotPrecisionRecallCurve(
         c,  # Class to show
         allBoundingBoxes,  # Object containing all bounding boxes (ground truths and detections)
@@ -340,9 +340,11 @@ def process_one_class(c):
     return result_per_class
 
 print("Finish load data. Num of classes %d" % len(allClasses))
-pool = ThreadPool(6)
+pool = ThreadPool(8)
 # open the urls in their own threads
 # and return the results
+
+allClasses = allClasses[6:13]
 metric_results = pool.map(process_one_class, allClasses)
 pool.close()
 pool.join()

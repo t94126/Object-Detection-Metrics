@@ -340,11 +340,11 @@ def process_one_class(c):
     return result_per_class
 
 print("Finish load data. Num of classes %d" % len(allClasses))
-pool = ThreadPool(8)
+pool = ThreadPool(4)
 # open the urls in their own threads
 # and return the results
 
-allClasses = allClasses[6:13]
+allClasses = allClasses[56:68]
 metric_results = pool.map(process_one_class, allClasses)
 pool.close()
 pool.join()
@@ -363,6 +363,11 @@ for i in range(0, len(allClasses)):
     total_TP = metricsPerClass['total TP']
     total_FP = metricsPerClass['total FP']
 
+    f_single = open(os.path.join(savePath, 'results_' + cl + '.txt'), 'w')
+    f_single.write('Object Detection Metrics\n')
+    f_single.write('https://github.com/rafaelpadilla/Object-Detection-Metrics\n\n\n')
+    f_single.write('Average Precision (AP), Precision and Recall per class:')
+
     if totalPositives > 0:
         validClasses = validClasses + 1
         acc_AP = acc_AP + ap
@@ -371,6 +376,11 @@ for i in range(0, len(allClasses)):
         ap_str = "{0:.2f}%".format(ap * 100)
         # ap_str = str('%.2f' % ap) #AQUI
         print('AP: %s (%s)' % (ap_str, cl))
+        f_single.write('\n\nClass: %s' % cl)
+        f_single.write('\nAP: %s' % ap_str)
+        f_single.write('\nPrecision: %s' % prec)
+        f_single.write('\nRecall: %s' % rec)
+        f_single.close()
         f.write('\n\nClass: %s' % cl)
         f.write('\nAP: %s' % ap_str)
         f.write('\nPrecision: %s' % prec)

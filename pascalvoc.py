@@ -21,6 +21,7 @@ import sys
 import os
 import glob
 import shutil
+from multiprocessing.dummy import Pool as ThreadPool
 
 
 # Validate formats
@@ -323,10 +324,11 @@ f.write('Average Precision (AP), Precision and Recall per class:')
 evaluator = Evaluator()
 acc_AP = 0
 validClasses = 0
-# for each class
-for c in allClasses:
-    # Plot Precision x Recall curve
-    metricsPerClass = evaluator.PlotPrecisionRecallCurve(
+
+
+def process_one_class(c):
+
+    result_per_class = evaluator.PlotPrecisionRecallCurve(
         c,  # Class to show
         allBoundingBoxes,  # Object containing all bounding boxes (ground truths and detections)
         IOUThreshold=iouThreshold,  # IOU threshold
@@ -334,6 +336,19 @@ for c in allClasses:
         showInterpolatedPrecision=False,  # Don't plot the interpolated precision curve
         savePath=os.path.join(savePath, c + '.png'),
         showGraphic=showPlot)
+    return result_per_class
+
+
+pool = ThreadPool(6)
+# open the urls in their own threads
+# and return the results
+metric_results = pool.map(process_one_class(), allClasses)
+
+
+# for each class
+for i in range(0, len(allClasses)):
+
+    metricsPerClass = metric_results[i]
     # Get metric values per each class
     cl = metricsPerClass['class']
     ap = metricsPerClass['AP']

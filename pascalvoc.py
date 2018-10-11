@@ -21,7 +21,7 @@ import sys
 import os
 import glob
 import shutil
-from multiprocessing import Pool as ThreadPool
+from multiprocessing import Pool as ProcessPool
 
 
 # Validate formats
@@ -195,6 +195,23 @@ parser.add_argument(
     help='folder containing your detected bounding boxes')
 # Optional
 parser.add_argument(
+    '-p',
+    '--processes',
+    dest='numProcesses',
+    type=int,
+    default=4,
+    metavar='',
+    help='num of processes used. Default 4')
+parser.add_argument(
+    '-r',
+    '--range',
+    dest='classRange',
+    nargs=2,
+    type=int,
+    default=[0,-1],
+    metavar=('start', 'end'),
+    help='range of classes allClasses[s:e] will be computed. Default 0:all')
+parser.add_argument(
     '-t',
     '--threshold',
     dest='iouThreshold',
@@ -241,10 +258,9 @@ parser.add_argument(
     '-sp', '--savepath', dest='savePath',
     metavar='', help='folder where the plots are saved')
 parser.add_argument(
-    '-np',
-    '--noplot',
+    '--plot',
     dest='showPlot',
-    action='store_false',
+    action='store_true',
     help='no plot is shown during execution')
 args = parser.parse_args()
 
@@ -340,12 +356,21 @@ def process_one_class(c):
     return result_per_class
 
 print("Finish load data. Num of classes %d" % len(allClasses))
-pool = ThreadPool(4)
+pool = ProcessPool(args.numProcesses)
 # open the urls in their own threads
 # and return the results
 
-allClasses = allClasses[56:68]
+# control the range
+start, end = args.classRange
+if end < 0:
+    end = len(allClasses)
+start = max(0, start)
+end = min(len(allClasses), end)
+
+allClasses = allClasses[start:end]
+
 metric_results = pool.map(process_one_class, allClasses)
+
 pool.close()
 pool.join()
 
@@ -381,6 +406,7 @@ for i in range(0, len(allClasses)):
         f_single.write('\nPrecision: %s' % prec)
         f_single.write('\nRecall: %s' % rec)
         f_single.close()
+
         f.write('\n\nClass: %s' % cl)
         f.write('\nAP: %s' % ap_str)
         f.write('\nPrecision: %s' % prec)

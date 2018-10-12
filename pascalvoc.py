@@ -352,7 +352,7 @@ def process_one_class(c):
         showInterpolatedPrecision=False,  # Don't plot the interpolated precision curve
         savePath=os.path.join(savePath, c + '.png'),
         showGraphic=showPlot)
-    print("Finished process classes %d" % c)
+    print("Finished process classes %s" % c)
     return result_per_class
 
 print("Finish load data. Num of classes %d" % len(allClasses))

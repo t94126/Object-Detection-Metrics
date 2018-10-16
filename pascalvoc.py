@@ -299,7 +299,8 @@ else:
 if args.savePath is not None:
     savePath = ValidatePaths(args.savePath, '-sp/--savepath', errors)
 else:
-    savePath = os.path.join(currentPath, 'results')
+    savePath = os.path.join(currentPath, "results_t_{:0>2d}".format(int(iouThreshold*100)))
+    #print(savePath);exit(0)
 # If error, show error messages
 if len(errors) is not 0:
     print("""usage: Object Detection Metrics [-h] [-v] [-gt] [-det] [-t] [-gtformat]

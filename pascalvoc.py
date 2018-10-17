@@ -368,7 +368,7 @@ if end < 0:
 start = max(0, start)
 end = min(len(allClasses), end)
 
-f = open(os.path.join(savePath, 'results_{d}_{d}.txt'i.format(start, end)), 'w')
+f = open(os.path.join(savePath, 'results_{d}_{d}.txt'.format(start, end)), 'w')
 f.write('Object Detection Metrics\n')
 f.write('https://github.com/rafaelpadilla/Object-Detection-Metrics\n\n\n')
 f.write('Average Precision (AP), Precision and Recall per class:')

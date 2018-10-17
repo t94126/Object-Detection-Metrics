@@ -333,10 +333,10 @@ allBoundingBoxes, allClasses = getBoundingBoxes(
     detFolder, False, detFormat, detCoordType, allBoundingBoxes, allClasses, imgSize=imgSize)
 allClasses.sort()
 
-f = open(os.path.join(savePath, 'results.txt'), 'w')
-f.write('Object Detection Metrics\n')
-f.write('https://github.com/rafaelpadilla/Object-Detection-Metrics\n\n\n')
-f.write('Average Precision (AP), Precision and Recall per class:')
+#f = open(os.path.join(savePath, 'results_{d}_{d}.txt'i.format()), 'w')
+#f.write('Object Detection Metrics\n')
+#f.write('https://github.com/rafaelpadilla/Object-Detection-Metrics\n\n\n')
+#f.write('Average Precision (AP), Precision and Recall per class:')
 
 evaluator = Evaluator()
 acc_AP = 0
@@ -367,6 +367,12 @@ if end < 0:
     end = len(allClasses)
 start = max(0, start)
 end = min(len(allClasses), end)
+
+f = open(os.path.join(savePath, 'results_{d}_{d}.txt'i.format(start, end)), 'w')
+f.write('Object Detection Metrics\n')
+f.write('https://github.com/rafaelpadilla/Object-Detection-Metrics\n\n\n')
+f.write('Average Precision (AP), Precision and Recall per class:')
+
 
 allClasses = allClasses[start:end]
 

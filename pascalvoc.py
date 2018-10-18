@@ -340,6 +340,7 @@ allClasses.sort()
 
 evaluator = Evaluator()
 acc_AP = 0
+acc_AR = 0
 validClasses = 0
 
 
@@ -397,6 +398,7 @@ for i in range(0, len(allClasses)):
 
     f_single = open(os.path.join(savePath, 'results_' + cl + '.txt'), 'w')
     f_single.write('Object Detection Metrics\n')
+    # f_single.write("totalPositives %d\n" % totalPositives)
     f_single.write('https://github.com/rafaelpadilla/Object-Detection-Metrics\n\n\n')
     f_single.write('Average Precision (AP), Precision and Recall per class:')
 
@@ -406,12 +408,16 @@ for i in range(0, len(allClasses)):
         prec = ['%.2f' % p for p in precision]
         rec = ['%.2f' % r for r in recall]
         ap_str = "{0:.2f}%".format(ap * 100)
-        # ap_str = str('%.2f' % ap) #AQUI
+        # print(recall)
+        max_r = max(recall) if len(recall) > 0 else 0
+        acc_AR = acc_AR + max_r
+        ap_str = str('%.2f' % ap) #AQUI
         print('AP: %s (%s)' % (ap_str, cl))
         f_single.write('\n\nClass: %s' % cl)
         f_single.write('\nAP: %s' % ap_str)
         f_single.write('\nPrecision: %s' % prec)
         f_single.write('\nRecall: %s' % rec)
+        f_single.write('\nMAXRecall: %s' % max_r)
         f_single.close()
 
         f.write('\n\nClass: %s' % cl)
@@ -419,8 +425,14 @@ for i in range(0, len(allClasses)):
         f.write('\nPrecision: %s' % prec)
         f.write('\nRecall: %s' % rec)
 
+AR = acc_AR / validClasses
+AR_str = "{0:.2f}%".format(AR * 100)
+print('AR: %s' % AR_str)
+f.write('\n\n\nAR: %s' % AR_str)
+
 mAP = acc_AP / validClasses
 mAP_str = "{0:.2f}%".format(mAP * 100)
 print('mAP: %s' % mAP_str)
 f.write('\n\n\nmAP: %s' % mAP_str)
+
 f.close()
